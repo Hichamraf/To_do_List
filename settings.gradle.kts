@@ -23,3 +23,4 @@ rootProject.name = "To do List"
 include(":app")
 include(":core")
 include(":home")
+include(":data")
