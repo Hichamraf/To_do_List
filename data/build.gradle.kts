@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.material)
 
     implementation(libs.androidx.room.runtime)
+    implementation(libs.room.ktx)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
     implementation(libs.hilt)

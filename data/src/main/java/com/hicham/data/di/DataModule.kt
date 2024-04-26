@@ -5,6 +5,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hicham.data.persistence.AppDatabase
 import com.hicham.data.persistence.dao.TaskDao
+import com.hicham.data.repository.TaskRepository
+import com.hicham.data.repository.TaskRepositoryImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +28,8 @@ object DataModule {
     @Provides
     fun provideTaskDao(appDatabase: AppDatabase): TaskDao =
         appDatabase.taskDao()
+
+    @Singleton
+    @Provides
+    fun provideTaskRepo(taskDao: TaskDao): TaskRepository = TaskRepositoryImpl(taskDao)
 }
