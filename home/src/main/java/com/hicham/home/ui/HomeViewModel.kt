@@ -18,9 +18,10 @@ class HomeViewModel @Inject constructor(private val getTasksUseCase: GetTasksUse
 
     private fun loadTasks() {
         viewModelScope.launch {
-            val tasks = getTasksUseCase.invoke(Unit)
-            updateViewState {
-                currentViewState().copy(taskList = tasks)
+            getTasksUseCase(Unit).collect {
+                updateViewState {
+                    currentViewState().copy(taskList = it)
+                }
             }
         }
     }
@@ -29,8 +30,8 @@ class HomeViewModel @Inject constructor(private val getTasksUseCase: GetTasksUse
         return HomeScreenState()
     }
 
-    override fun processViewActions(viewEvent: HomeAction) {
-        when (viewEvent) {
+    override fun processViewActions(viewAction: HomeAction) {
+        when (viewAction) {
             is HomeAction.OnTaskCheckChanged -> TODO()
         }
     }

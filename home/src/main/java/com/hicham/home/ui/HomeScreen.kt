@@ -9,35 +9,42 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hicham.data.persistence.model.Task
 import com.hicham.home.R
+
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onAddClicked: () -> Unit) {
 
     val state by viewModel.viewState.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        LazyColumn {
-            items(state.taskList) {
-                TaskItem(it) {
-                }
-            }
-        }
-
+    Scaffold(floatingActionButton = {
         FloatingActionButton(
             shape = CircleShape,
             onClick = { onAddClicked.invoke() }) {
             Icon(painter = painterResource(R.drawable.baseline_add_24), null)
         }
-    }
+    }, content =  {_->
+        Column(modifier = Modifier.fillMaxSize()) {
+            LazyColumn {
+                items(state.taskList) {
+                    TaskItem(it) {
+                    }
+                }
+            }
+        }
+    })
+
+
 }
 
 
@@ -49,5 +56,13 @@ fun TaskItem(task: Task, onChecked: (Boolean) -> Unit) {
             Text(task.name)
             Text(task.description)
         }
+    }
+}
+
+@Preview
+@Composable
+fun Preview() {
+    HomeScreen {
+
     }
 }

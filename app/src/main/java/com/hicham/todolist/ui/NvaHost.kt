@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.hicham.home.ui.HomeScreen
-import com.hicham.task.ui.AddTaskScreen
+import com.hicham.task.addtask.ui.AddTaskScreen
 import com.hicham.todolist.model.NavigationItem
 
 
@@ -19,7 +19,9 @@ fun AppNavHost(navController: NavHostController, startDestination: String = Navi
             }
         }
         composable(NavigationItem.addTask.route) {
-            AddTaskScreen()
+            AddTaskScreen {
+                navController.popBackStack()
+            }
         }
 
     }

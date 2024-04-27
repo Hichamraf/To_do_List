@@ -40,7 +40,7 @@ abstract class BaseViewModel<
     val coordinatorEvent = _coordinatorEvent.receiveAsFlow()
 
     abstract fun createInitialState(): VS
-    abstract fun processViewActions(viewEvent: VA)
+    abstract fun processViewActions(viewAction: VA)
 
     init {
         subscribeViewEvents()

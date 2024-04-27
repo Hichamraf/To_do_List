@@ -3,19 +3,21 @@ package com.hicham.data.persistence.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.hicham.data.persistence.model.Task
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
 
     @Query("Select * FROM task")
-    suspend fun getAll(): List<Task>
+    fun getAll(): Flow<List<Task>>
 
     @Query("Select * FROM task where name LIKE :query OR description LIKE :query")
     suspend fun searchTask(query: String): List<Task>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTasks(vararg task: Task)
 
     @Delete
