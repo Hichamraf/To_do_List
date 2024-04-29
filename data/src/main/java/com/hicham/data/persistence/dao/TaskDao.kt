@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.hicham.data.persistence.model.Task
 import kotlinx.coroutines.flow.Flow
 
@@ -22,4 +23,7 @@ interface TaskDao {
 
     @Delete
     suspend fun delete(task: Task)
+
+    @Update
+    suspend fun update(task: Task)
 }

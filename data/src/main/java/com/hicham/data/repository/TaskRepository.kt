@@ -8,4 +8,6 @@ interface TaskRepository {
     suspend fun searchTask(query: String): List<Task>
     suspend fun insertTask(vararg task: Task)
     suspend fun removeTask(task: Task)
+
+    suspend fun updateTask(task: Task)
 }
