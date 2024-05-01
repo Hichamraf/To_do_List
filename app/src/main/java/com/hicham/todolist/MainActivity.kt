@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.hicham.todolist.ui.AppNavHost
-import com.hicham.todolist.ui.theme.ToDoListTheme
+import com.hicham.core.theme.ToDoListTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

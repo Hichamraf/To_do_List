@@ -7,6 +7,7 @@ import com.hicham.data.persistence.model.Task
 import com.hicham.task.addtask.domain.usecase.SaveTaskUseCase
 import com.hicham.task.addtask.ui.AddTaskAction.OnAddTask
 import com.hicham.task.addtask.ui.NavigationEvent.OnTaskSaved
+import com.hicham.task.utils.isTaskValid
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
@@ -49,5 +50,5 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
         }
     }
 
-    private fun Task.isTaskValid() = name.isNotEmpty()
+
 }

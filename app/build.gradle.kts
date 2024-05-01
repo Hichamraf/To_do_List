@@ -71,6 +71,7 @@ dependencies {
 
     implementation(project(":home"))
     implementation(project(":task"))
+    implementation(project(":core"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

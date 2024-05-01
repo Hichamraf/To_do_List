@@ -3,4 +3,5 @@
     <string name="task_description_ph">description</string>
     <string name="add_task_button_name">Add Task</string>
     <string name="add_task_name_ph">name</string>
+    <string name="update_task_btn_name">Update Task</string>
 </resources>

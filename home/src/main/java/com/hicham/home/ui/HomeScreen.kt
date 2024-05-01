@@ -1,7 +1,7 @@
 package com.hicham.home.ui
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -28,13 +27,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hicham.core.theme.ToDoListTheme
 import com.hicham.data.persistence.model.Task
 import com.hicham.home.R
 import com.hicham.home.ui.HomeAction.OnTaskCheckChanged
 
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onAddClicked: () -> Unit) {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    onAddClicked: () -> Unit,
+    onItemClicked: () -> Unit
+) {
 
     val state by viewModel.viewState.collectAsState()
 
@@ -44,14 +48,19 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onAddClicked: () -> U
             onClick = { onAddClicked.invoke() }) {
             Icon(painter = painterResource(R.drawable.baseline_add_24), null)
         }
-    }, content =  {_->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 32.dp)) {
+    }, content = { _ ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 32.dp)
+        ) {
             LazyColumn {
                 items(state.taskList) {
-                    TaskItem(it) {isChecked->
-                        viewModel.processViewActions(OnTaskCheckChanged(isChecked,it))
+                    TaskItem(it, onItemClicked={
+                        viewModel.processViewActions(HomeAction.OnTaskSelected(it))
+                        onItemClicked.invoke()
+                    }) { isChecked ->
+                        viewModel.processViewActions(OnTaskCheckChanged(isChecked, it))
                     }
                 }
             }
@@ -63,30 +72,35 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onAddClicked: () -> U
 
 
 @Composable
-fun TaskItem(task: Task, onChecked: (Boolean) -> Unit) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .background(Color.White)
-        .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
-        colors = CardDefaults.cardColors().copy(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)) {
-        Row(modifier = Modifier.padding(8.dp)) {
-            Checkbox(checked = task.isDone, onCheckedChange = {
-                onChecked(it)
-            })
-            Column {
-                Text(task.name)
-                Text(task.description)
+fun TaskItem(task: Task, onItemClicked: () -> Unit, onChecked: (Boolean) -> Unit) {
+    ToDoListTheme {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onItemClicked.invoke()
+                }
+                .padding(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
+            colors = CardDefaults.cardColors().copy(containerColor = MaterialTheme.colorScheme.background),
+            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
+        ) {
+            Row(modifier = Modifier.padding(8.dp)) {
+                Checkbox(checked = task.isDone, onCheckedChange = {
+                    onChecked(it)
+                })
+                Column {
+                    Text(task.name)
+                    Text(task.description)
+                }
             }
         }
     }
+
 
 }
 
 @Preview
 @Composable
 fun Preview() {
-    HomeScreen {
 
-    }
 }
