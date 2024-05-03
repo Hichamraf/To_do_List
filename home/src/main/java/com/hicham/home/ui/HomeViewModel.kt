@@ -41,6 +41,7 @@ class HomeViewModel @Inject constructor(
         when (viewAction) {
             is HomeAction.OnTaskCheckChanged -> processTaskCheckChange(viewAction.isChecked, viewAction.task)
             is HomeAction.OnTaskSelected -> viewModelScope.launch { setSelectedTaskUseCase(viewAction.task) }
+            is HomeAction.OnTaskFavoriteClicked -> viewModelScope.launch { updateTaskUseCase(viewAction.task.copy(isFavorite = viewAction.isFavourite)) }
         }
     }
 

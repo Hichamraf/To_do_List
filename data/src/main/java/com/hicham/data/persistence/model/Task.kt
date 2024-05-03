@@ -9,5 +9,6 @@ data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo val name: String,
     @ColumnInfo val description: String,
-    @ColumnInfo val isDone: Boolean = false
+    @ColumnInfo val isDone: Boolean = false,
+    @ColumnInfo val isFavorite: Boolean = false
 )
