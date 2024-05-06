@@ -9,7 +9,7 @@ import com.hicham.core.model.ViewState
 data class AddTaskState (val nameError: Boolean = false) : ViewState
 
 sealed interface AddTaskAction : ViewAction {
-    data class OnAddTask(val name: String, val description: String) : AddTaskAction
+    data class OnAddTask(val name: String, val description: String,val date: Long?) : AddTaskAction
     data object OnNameTextChanged : AddTaskAction
 }
 

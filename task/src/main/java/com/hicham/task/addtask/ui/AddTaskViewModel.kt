@@ -9,6 +9,7 @@ import com.hicham.task.addtask.ui.AddTaskAction.OnAddTask
 import com.hicham.task.addtask.ui.NavigationEvent.OnTaskSaved
 import com.hicham.task.utils.isTaskValid
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -33,7 +34,8 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
     }
 
     private fun processAddTask(viewAction: OnAddTask) {
-        val task = Task(name = viewAction.name, description = viewAction.description)
+        val date = createDateFromMillis(viewAction.date)
+        val task = Task(name = viewAction.name, description = viewAction.description, date = date)
         if (task.isTaskValid()) {
             saveTask(task)
         } else {
@@ -41,6 +43,14 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
                 currentViewState().copy(nameError = true)
             }
         }
+    }
+
+    private fun createDateFromMillis(timeInMillis: Long?): Date? {
+        if (timeInMillis == null)
+            return null
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timeInMillis
+        return calendar.time
     }
 
     private fun saveTask(task: Task) {
