@@ -1,7 +1,9 @@
 package com.hicham.todolist
 
 import android.os.Bundle
+import android.window.OnBackInvokedDispatcher
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -27,8 +29,18 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     AppNavHost(navController = navController)
                 }
+
+                onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        navController.popBackStack()
+                    }
+                })
             }
         }
+    }
+
+    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
+        return super.getOnBackInvokedDispatcher()
     }
 }
 

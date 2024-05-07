@@ -35,7 +35,7 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
 
     private fun processAddTask(viewAction: OnAddTask) {
         val date = createDateFromMillis(viewAction.date)
-        val task = Task(name = viewAction.name, description = viewAction.description, date = date)
+        val task = Task(name = viewAction.name, description = viewAction.description, date = date, priority = viewAction.priority)
         if (task.isTaskValid()) {
             saveTask(task)
         } else {

@@ -6,10 +6,10 @@ import com.hicham.core.model.ViewEvent
 import com.hicham.core.model.ViewState
 
 
-data class AddTaskState (val nameError: Boolean = false) : ViewState
+data class AddTaskState(val nameError: Boolean = false) : ViewState
 
 sealed interface AddTaskAction : ViewAction {
-    data class OnAddTask(val name: String, val description: String,val date: Long?) : AddTaskAction
+    data class OnAddTask(val name: String, val description: String, val date: Long?, val priority: Int) : AddTaskAction
     data object OnNameTextChanged : AddTaskAction
 }
 

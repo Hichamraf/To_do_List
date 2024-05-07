@@ -12,5 +12,6 @@ data class Task(
     @ColumnInfo val description: String,
     @ColumnInfo val isDone: Boolean = false,
     @ColumnInfo val isFavorite: Boolean = false,
-    @ColumnInfo val date: Date? = null
+    @ColumnInfo val date: Date? = null,
+    @ColumnInfo val priority: Int = 0
 )

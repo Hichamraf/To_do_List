@@ -1,11 +1,9 @@
 package com.hicham.task.addtask.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -18,12 +16,13 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -32,17 +31,22 @@ import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +58,9 @@ import com.hicham.task.addtask.ui.AddTaskAction.OnAddTask
 import com.hicham.task.addtask.ui.AddTaskAction.OnNameTextChanged
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskScreen(viewModel: AddTaskViewModel = hiltViewModel(), onGoBack: () -> Unit) {
 
@@ -62,12 +68,18 @@ fun AddTaskScreen(viewModel: AddTaskViewModel = hiltViewModel(), onGoBack: () ->
         viewModel.coordinatorEvent.collect {
             onGoBack.invoke()
         }
-    }
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    }
+    var showBottomSheet by remember { mutableStateOf(false) }
+    ModalBottomSheet(
+        onDismissRequest = {
+            showBottomSheet = false
+        }
+    ) {
         Column {
-            Spacer(modifier = Modifier.weight(1f))
-            TaskInfos(viewModel)
+            TaskInfos(viewModel) {
+                showBottomSheet = false
+            }
         }
     }
 
@@ -76,14 +88,24 @@ fun AddTaskScreen(viewModel: AddTaskViewModel = hiltViewModel(), onGoBack: () ->
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TaskInfos(viewModel: AddTaskViewModel) {
+private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () -> Unit) {
 
     val state by viewModel.viewState.collectAsState()
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    val showDatePicker = remember {
+        mutableStateOf(false)
+    }
     val calendar = remember {
         Calendar.getInstance()
     }
+    val priorityMenuShow = remember {
+        mutableStateOf(false)
+    }
+
+    val priorities = LocalContext.current.resources.getStringArray(com.hicham.core.R.array.priorities)
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
     val currentYear = remember {
         calendar.get(Calendar.YEAR)
     }
@@ -100,29 +122,27 @@ private fun TaskInfos(viewModel: AddTaskViewModel) {
         }
     )
     val timeState = rememberTimePickerState()
-    val showTimePicker = remember {
-        mutableStateOf(false)
-    }
-    val showDatePicker = remember {
-        mutableStateOf(false)
-    }
 
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
 
-    DisposableEffect(key1 = state) {
+    LaunchedEffect(key1 = focusRequester) {
+        focusRequester.requestFocus()
+        delay(100)
         keyboardController?.show()
-        onDispose { }
     }
 
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp, end = 8.dp)
     ) {
 
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
+                .focusRequester(focusRequester)
                 .padding(start = 2.dp, end = 2.dp, top = 0.dp, bottom = 0.dp),
             value = name, onValueChange = {
                 name = it
@@ -132,8 +152,8 @@ private fun TaskInfos(viewModel: AddTaskViewModel) {
                 Text(text = stringResource(R.string.add_task_name_ph))
             },
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
@@ -152,8 +172,8 @@ private fun TaskInfos(viewModel: AddTaskViewModel) {
                 .padding(start = 2.dp, end = 2.dp, top = 0.dp, bottom = 0.dp)
                 .fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.background,
-                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
@@ -182,50 +202,97 @@ private fun TaskInfos(viewModel: AddTaskViewModel) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = "Today")
             }
+            OutlinedButton(
+                onClick = {
+                    priorityMenuShow.value = true
+                    keyboardController?.hide()
+                },
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
+                Icon(painter = painterResource(id = R.drawable.ic_flag), contentDescription = "Priority")
+                Text(text = priorities[selectedIndex])
+            }
             Spacer(modifier = Modifier.weight(1f))
             OutlinedButton(onClick = {
+                onBottomSheetDismissed.invoke()
                 viewModel.processViewActions(
                     OnAddTask(
                         name, description,
-                        (dateState.selectedDateMillis?.plus(TimeUnit.HOURS.toMillis(timeState.hour.toLong())) ?: 0)
-                                + TimeUnit.MINUTES.toMillis(timeState.minute.toLong())
-                    )
+                        getSelectedTime(dateState, timeState),
+                        selectedIndex,
+
+                        )
                 )
             }) {
                 Icon(Icons.AutoMirrored.Outlined.Send, contentDescription = "Send")
             }
         }
     }
-    CalenderPicker(datePicker = dateState, showDatePicker, showTimePicker, timeState)
+    CalenderPicker(dateState,timeState,showDatePicker)
+    PriorityMenu(priorityMenuShow, keyboardController, priorities) {
+        selectedIndex = it
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+private fun getSelectedTime(dateState: DatePickerState, timeState: TimePickerState) =
+    ((dateState.selectedDateMillis?.plus(TimeUnit.HOURS.toMillis(timeState.hour.toLong())) ?: 0)
+            + TimeUnit.MINUTES.toMillis(timeState.minute.toLong()))
+
+@Composable
+fun PriorityMenu(
+    priorityMenuShow: MutableState<Boolean>, keyboardController: SoftwareKeyboardController?,
+    priorities: Array<String>,
+    onItemSelected: (Int) -> Unit,
+) {
+    DropdownMenu(expanded = priorityMenuShow.value,
+        onDismissRequest = {
+            priorityMenuShow.value = false
+            keyboardController?.show()
+        })
+    {
+        priorities.forEachIndexed { index, s ->
+            DropdownMenuItem(text = { Text(text = s) }, onClick = {
+                priorityMenuShow.value = false
+                onItemSelected(index)
+            })
+        }
+    }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalenderPicker(datePicker: DatePickerState, showDatePicker: MutableState<Boolean>, showTimePicker: MutableState<Boolean>, timeState: TimePickerState) {
+fun CalenderPicker(
+    datePicker: DatePickerState,
+    timeState: TimePickerState,
+    showDatePicker: MutableState<Boolean>
+) {
+    val showTimePicker = remember {
+        mutableStateOf(false)
+    }
     if (showDatePicker.value) {
         DatePickerDialog(
             onDismissRequest = {
                 showDatePicker.value = false
-                showDatePicker.value = false
             },
             confirmButton = {
                 OutlinedButton(onClick = {
-                    showTimePicker.value = true
+                    showTimePicker.value=true
                     showDatePicker.value = false
                 }) {
                     Text(text = "Choose Time")
                 }
             },
             dismissButton = {
-                OutlinedButton(onClick = { showDatePicker.value = false }) {
+                OutlinedButton(onClick = { showDatePicker.value=true }) {
                     Text(text = "Dismiss")
                 }
 
             },
             properties = DialogProperties()
         ) {
-            datePicker.selectableDates
             DatePicker(state = datePicker)
         }
     }
@@ -248,12 +315,4 @@ fun CalenderPicker(datePicker: DatePickerState, showDatePicker: MutableState<Boo
         }
     }
 
-}
-
-@Preview
-@Composable
-fun AddTaskPreview() {
-    AddTaskScreen {
-
-    }
 }
