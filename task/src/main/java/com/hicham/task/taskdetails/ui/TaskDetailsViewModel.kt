@@ -2,11 +2,15 @@ package com.hicham.task.taskdetails.ui
 
 import androidx.lifecycle.viewModelScope
 import com.hicham.core.ui.BaseViewModel
+import com.hicham.core.utils.createDateFromMillis
+import com.hicham.core.utils.getTodayStartOfDayMillis
+import com.hicham.core.utils.millisToDate
 import com.hicham.data.persistence.model.Task
 import com.hicham.task.taskdetails.domain.usecase.GetSelectedTaskUseCase
 import com.hicham.task.taskdetails.domain.usecase.UpdateTaskUseCase
 import com.hicham.task.utils.isTaskValid
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -17,27 +21,51 @@ class TaskDetailsViewModel @Inject constructor(
 ) : BaseViewModel<TaskDetailsUiState, TaskDetailAction, TaskDetailsEvent>() {
 
     private lateinit var selectedTask: Task
+
     init {
         viewModelScope.launch {
-             selectedTask = getSelectedTaskUseCase(Unit)
+            selectedTask = getSelectedTaskUseCase(Unit)
             updateViewState {
-                currentViewState().copy(task = selectedTask)
+                currentViewState().copy(task = selectedTask, date = getDate(selectedTask.date))
             }
         }
     }
+
+    private fun getDate(date: Date?): String? {
+        if (date?.time != getTodayStartOfDayMillis() && date != null)
+           return millisToDate(date.time)
+       return null
+    }
+
     override fun createInitialState(): TaskDetailsUiState {
         return TaskDetailsUiState()
     }
 
     override fun processViewActions(viewAction: TaskDetailAction) {
         when (viewAction) {
-            is TaskDetailAction.UpdateTask -> processUpdateTask(viewAction.name, viewAction.descriptor, viewAction.isDone)
+            is TaskDetailAction.UpdateTask -> processUpdateTask(viewAction.name, viewAction.descriptor, viewAction.isDone,viewAction.date, viewAction.priority)
             TaskDetailAction.OnNameTextChanged -> checkNameError()
+            is TaskDetailAction.OnTaskCheckBoxChanged -> updateTaskState(viewAction.isDone)
+            is TaskDetailAction.OnDateChanged -> updateDate(viewAction.newDate)
         }
     }
 
-    private fun processUpdateTask(name: String, descriptor: String, done: Boolean) {
-        val task = selectedTask.copy(name = name, description = descriptor, isDone = done)
+    private fun updateDate(newDate: Long) {
+        updateViewState {
+            copy(date= millisToDate(newDate))
+        }
+    }
+
+    private fun updateTaskState(done: Boolean) {
+        updateViewState {
+            copy(task = selectedTask.copy(isDone = done))
+        }
+    }
+
+    private fun processUpdateTask(name: String, descriptor: String, done: Boolean, date: Long?, priority: Int) {
+        val newDate = if (date!=null ) createDateFromMillis(date) else selectedTask.date
+        val task = selectedTask.copy(name = name, description = descriptor, isDone = done,
+            date = newDate , priority = priority)
         if (task.isTaskValid()) {
             updateTask(task)
         } else {
@@ -46,6 +74,7 @@ class TaskDetailsViewModel @Inject constructor(
             }
         }
     }
+
 
     private fun checkNameError() {
         currentViewState().apply {

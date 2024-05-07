@@ -19,3 +19,11 @@ fun getTodayStartOfDayMillis(): Long {
     calendar.set(Calendar.MILLISECOND, 0)
     return calendar.timeInMillis
 }
+
+fun createDateFromMillis(timeInMillis: Long?): Date? {
+    if (timeInMillis == null)
+        return null
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timeInMillis
+    return calendar.time
+}

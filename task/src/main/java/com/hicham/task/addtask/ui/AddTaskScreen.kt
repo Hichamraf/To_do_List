@@ -57,6 +57,9 @@ import com.hicham.task.addtask.ui.AddTaskAction.OnNameTextChanged
 import com.hicham.core.utils.getTodayStartOfDayMillis
 import com.hicham.core.utils.millisToDate
 import com.hicham.task.addtask.ui.AddTaskAction.OnDateChanged
+import com.hicham.task.uicomponents.CalenderPicker
+import com.hicham.task.uicomponents.PriorityMenu
+import com.hicham.task.utils.createCustomSelectableDates
 import java.util.*
 import kotlinx.coroutines.delay
 
@@ -74,6 +77,7 @@ fun AddTaskScreen(viewModel: AddTaskViewModel = hiltViewModel(), onGoBack: () ->
     ModalBottomSheet(
         onDismissRequest = {
             showBottomSheet = false
+            onGoBack.invoke()
         }
     ) {
         Column {
@@ -111,17 +115,8 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
     }
     val dateState = rememberDatePickerState(
         yearRange = IntRange(currentYear, currentYear),
-        selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return utcTimeMillis >= getTodayStartOfDayMillis()
-            }
-
-            override fun isSelectableYear(year: Int): Boolean {
-                return year >= currentYear
-            }
-        }
+        selectableDates = createCustomSelectableDates()
     )
-    val timeState = rememberTimePickerState()
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -219,7 +214,7 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
                 viewModel.processViewActions(
                     OnAddTask(
                         name, description,
-                        getSelectedTime(dateState, timeState),
+                        getSelectedTime(dateState),
                         selectedIndex,
 
                         )
@@ -229,7 +224,7 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
             }
         }
     }
-    CalenderPicker(dateState, showDatePicker){
+    CalenderPicker(dateState, showDatePicker) {
         dateState.selectedDateMillis?.let {
             viewModel.processViewActions(OnDateChanged(it))
         }
@@ -240,83 +235,6 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private fun getSelectedTime(dateState: DatePickerState, timeState: TimePickerState) = dateState.selectedDateMillis ?: Calendar.getInstance().timeInMillis
-/*   ((dateState.selectedDateMillis?.plus(TimeUnit.HOURS.toMillis(timeState.hour.toLong())) ?: 0)
-           + TimeUnit.MINUTES.toMillis(timeState.minute.toLong()))*/
-
-@Composable
-fun PriorityMenu(
-    priorityMenuShow: MutableState<Boolean>, keyboardController: SoftwareKeyboardController?,
-    priorities: Array<String>,
-    onItemSelected: (Int) -> Unit,
-) {
-    DropdownMenu(expanded = priorityMenuShow.value,
-        onDismissRequest = {
-            priorityMenuShow.value = false
-            keyboardController?.show()
-        })
-    {
-        priorities.forEachIndexed { index, s ->
-            DropdownMenuItem(text = { Text(text = s) }, onClick = {
-                priorityMenuShow.value = false
-                onItemSelected(index)
-            })
-        }
-    }
-}
+private fun getSelectedTime(dateState: DatePickerState) = dateState.selectedDateMillis ?: getTodayStartOfDayMillis()
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CalenderPicker(
-    datePicker: DatePickerState,
-    showDatePicker: MutableState<Boolean>,
-    onDateChanged:()->Unit
-) {
-    /* val showTimePicker = remember {
-         mutableStateOf(false)
-     }*/
-    if (showDatePicker.value) {
-        DatePickerDialog(
-            onDismissRequest = {
-                showDatePicker.value = false
-            },
-            confirmButton = {
-                OutlinedButton(onClick = {
-                    onDateChanged.invoke()
-                    showDatePicker.value = false
-                }) {
-                    Text(text = "Save")
-                }
-            },
-            dismissButton = {
-                OutlinedButton(onClick = { showDatePicker.value = false }) {
-                    Text(text = "Dismiss")
-                }
-
-            },
-            properties = DialogProperties()
-        ) {
-            DatePicker(state = datePicker)
-        }
-    }
-
-    /*   if (showTimePicker.value) {
-           DatePickerDialog(onDismissRequest = { showTimePicker.value = false }, confirmButton = {
-               OutlinedButton(onClick = { showTimePicker.value = false }) {
-                   Text(text = "Done")
-               }
-           },
-               dismissButton = {
-                   OutlinedButton(onClick = {
-                       showTimePicker.value = false
-                   }) {
-                       Text(text = "Cancel")
-                   }
-               }
-           ) {
-               TimePicker(state = timeState)
-           }
-       }*/
-
-}
