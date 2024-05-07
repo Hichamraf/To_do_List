@@ -26,7 +26,6 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -49,15 +48,16 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hicham.task.R
 import com.hicham.task.addtask.ui.AddTaskAction.OnAddTask
 import com.hicham.task.addtask.ui.AddTaskAction.OnNameTextChanged
+import com.hicham.core.utils.getTodayStartOfDayMillis
+import com.hicham.core.utils.millisToDate
+import com.hicham.task.addtask.ui.AddTaskAction.OnDateChanged
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -113,7 +113,7 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
         yearRange = IntRange(currentYear, currentYear),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return utcTimeMillis > calendar.timeInMillis
+                return utcTimeMillis >= getTodayStartOfDayMillis()
             }
 
             override fun isSelectableYear(year: Int): Boolean {
@@ -200,7 +200,7 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
             ) {
                 Icon(Icons.Default.DateRange, contentDescription = "Calender")
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Today")
+                Text(text = state.dateButtonName ?: "Today")
             }
             OutlinedButton(
                 onClick = {
@@ -229,16 +229,20 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
             }
         }
     }
-    CalenderPicker(dateState,timeState,showDatePicker)
+    CalenderPicker(dateState, showDatePicker){
+        dateState.selectedDateMillis?.let {
+            viewModel.processViewActions(OnDateChanged(it))
+        }
+    }
     PriorityMenu(priorityMenuShow, keyboardController, priorities) {
         selectedIndex = it
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private fun getSelectedTime(dateState: DatePickerState, timeState: TimePickerState) =
-    ((dateState.selectedDateMillis?.plus(TimeUnit.HOURS.toMillis(timeState.hour.toLong())) ?: 0)
-            + TimeUnit.MINUTES.toMillis(timeState.minute.toLong()))
+private fun getSelectedTime(dateState: DatePickerState, timeState: TimePickerState) = dateState.selectedDateMillis ?: Calendar.getInstance().timeInMillis
+/*   ((dateState.selectedDateMillis?.plus(TimeUnit.HOURS.toMillis(timeState.hour.toLong())) ?: 0)
+           + TimeUnit.MINUTES.toMillis(timeState.minute.toLong()))*/
 
 @Composable
 fun PriorityMenu(
@@ -266,12 +270,12 @@ fun PriorityMenu(
 @Composable
 fun CalenderPicker(
     datePicker: DatePickerState,
-    timeState: TimePickerState,
-    showDatePicker: MutableState<Boolean>
+    showDatePicker: MutableState<Boolean>,
+    onDateChanged:()->Unit
 ) {
-    val showTimePicker = remember {
-        mutableStateOf(false)
-    }
+    /* val showTimePicker = remember {
+         mutableStateOf(false)
+     }*/
     if (showDatePicker.value) {
         DatePickerDialog(
             onDismissRequest = {
@@ -279,14 +283,14 @@ fun CalenderPicker(
             },
             confirmButton = {
                 OutlinedButton(onClick = {
-                    showTimePicker.value=true
+                    onDateChanged.invoke()
                     showDatePicker.value = false
                 }) {
-                    Text(text = "Choose Time")
+                    Text(text = "Save")
                 }
             },
             dismissButton = {
-                OutlinedButton(onClick = { showDatePicker.value=true }) {
+                OutlinedButton(onClick = { showDatePicker.value = false }) {
                     Text(text = "Dismiss")
                 }
 
@@ -297,22 +301,22 @@ fun CalenderPicker(
         }
     }
 
-    if (showTimePicker.value) {
-        DatePickerDialog(onDismissRequest = { showTimePicker.value = false }, confirmButton = {
-            OutlinedButton(onClick = { showTimePicker.value = false }) {
-                Text(text = "Done")
-            }
-        },
-            dismissButton = {
-                OutlinedButton(onClick = {
-                    showTimePicker.value = false
-                }) {
-                    Text(text = "Cancel")
-                }
-            }
-        ) {
-            TimePicker(state = timeState)
-        }
-    }
+    /*   if (showTimePicker.value) {
+           DatePickerDialog(onDismissRequest = { showTimePicker.value = false }, confirmButton = {
+               OutlinedButton(onClick = { showTimePicker.value = false }) {
+                   Text(text = "Done")
+               }
+           },
+               dismissButton = {
+                   OutlinedButton(onClick = {
+                       showTimePicker.value = false
+                   }) {
+                       Text(text = "Cancel")
+                   }
+               }
+           ) {
+               TimePicker(state = timeState)
+           }
+       }*/
 
 }

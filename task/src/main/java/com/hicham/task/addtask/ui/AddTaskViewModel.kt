@@ -3,6 +3,7 @@ package com.hicham.task.addtask.ui
 import androidx.compose.runtime.produceState
 import androidx.lifecycle.viewModelScope
 import com.hicham.core.ui.BaseViewModel
+import com.hicham.core.utils.millisToDate
 import com.hicham.data.persistence.model.Task
 import com.hicham.task.addtask.domain.usecase.SaveTaskUseCase
 import com.hicham.task.addtask.ui.AddTaskAction.OnAddTask
@@ -23,6 +24,13 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
         when (viewAction) {
             is OnAddTask -> processAddTask(viewAction)
             AddTaskAction.OnNameTextChanged -> checkNameError()
+            is AddTaskAction.OnDateChanged -> updateDateButtonName(viewAction.newDate)
+        }
+    }
+
+    private fun updateDateButtonName(newDate: Long) {
+        updateViewState {
+            copy(dateButtonName = millisToDate(newDate))
         }
     }
 
