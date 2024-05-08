@@ -33,13 +33,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hicham.task.R
@@ -51,6 +54,7 @@ import com.hicham.task.uicomponents.CalenderPicker
 import com.hicham.task.uicomponents.PriorityMenu
 import com.hicham.task.utils.createCustomSelectableDates
 import java.util.*
+import kotlinx.coroutines.delay
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +82,13 @@ fun TaskDetailsScreen(
 private fun TaskInfos(viewModel: TaskDetailsViewModel) {
 
     val state by viewModel.viewState.collectAsState()
-    var name by remember { mutableStateOf("") }
+    var name by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = ""
+            )
+        )
+    }
     var description by remember { mutableStateOf("") }
     val isFirstLoad = remember {
         mutableStateOf(true)
@@ -91,13 +101,25 @@ private fun TaskInfos(viewModel: TaskDetailsViewModel) {
         mutableIntStateOf(0)
     }
     if (state.task?.name?.isNotEmpty() == true && isFirstLoad.value) {
-        name = state.task?.name.orEmpty()
+        val value = name.text.plus(state.task?.name.orEmpty())
+        name = TextFieldValue(
+            text = value,
+            selection = TextRange(value.length)
+        )
         description = state.task?.description.orEmpty()
         isTaskDone.value = state.task?.isDone ?: false
         priority.intValue = state.task?.priority ?: 0
         isFirstLoad.value = false
     }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(key1 = focusRequester) {
+        focusRequester.requestFocus()
+        delay(100)
+        keyboardController?.show()
+    }
+
     val currentYear = remember {
         Calendar.getInstance().get(Calendar.YEAR)
     }
@@ -126,6 +148,7 @@ private fun TaskInfos(viewModel: TaskDetailsViewModel) {
                 isTaskDone.value = it
             })
             OutlinedTextField(
+                modifier = Modifier.focusRequester(focusRequester),
                 value = name,
                 onValueChange = {
                     name = it
@@ -216,7 +239,7 @@ private fun TaskInfos(viewModel: TaskDetailsViewModel) {
                     .padding(all = 4.dp), onClick = {
                     viewModel.processViewActions(
                         UpdateTask(
-                            name, description,
+                            name.text, description,
                             isTaskDone.value, dateState.selectedDateMillis, priority.intValue
                         )
                     )

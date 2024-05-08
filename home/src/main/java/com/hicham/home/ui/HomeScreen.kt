@@ -1,5 +1,6 @@
 package com.hicham.home.ui
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,25 +13,46 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
@@ -60,28 +82,33 @@ fun HomeScreen(
             onClick = { onAddClicked.invoke() }) {
             Icon(painter = painterResource(R.drawable.baseline_add_24), null)
         }
-    }, content = { _ ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 32.dp)
-        ) {
-            LazyColumn {
-                items(state.taskList) {
-                    TaskItem(it, onItemClicked = {
-                        viewModel.processViewActions(HomeAction.OnTaskSelected(it))
-                        onItemClicked.invoke()
-                    },
-                        onFavoriteClicked = { isFav ->
-                            viewModel.processViewActions(HomeAction.OnTaskFavoriteClicked(isFav, it))
+    },
+        bottomBar = {
+            TabView(tabBarItems = getTabBarItems(LocalContext.current))
+
+        },
+        content = { _ ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 32.dp)
+            ) {
+                LazyColumn {
+                    items(state.taskList) {
+                        TaskItem(it, onItemClicked = {
+                            viewModel.processViewActions(HomeAction.OnTaskSelected(it))
+                            onItemClicked.invoke()
                         },
-                        onChecked = { isChecked ->
-                            viewModel.processViewActions(OnTaskCheckChanged(isChecked, it))
-                        })
+                            onFavoriteClicked = { isFav ->
+                                viewModel.processViewActions(HomeAction.OnTaskFavoriteClicked(isFav, it))
+                            },
+                            onChecked = { isChecked ->
+                                viewModel.processViewActions(OnTaskCheckChanged(isChecked, it))
+                            })
+                    }
                 }
             }
-        }
-    })
+        })
 
 
 }
@@ -126,8 +153,10 @@ fun TaskItem(
                 AssistChip(
                     onClick = { },
                     label = { Text(text = priorities[task.priority], fontSize = 8.sp) },
-                    colors = AssistChipDefaults.assistChipColors().copy(containerColor = getChipColor(task.priority),
-                        labelColor = Color.Black)
+                    colors = AssistChipDefaults.assistChipColors().copy(
+                        containerColor = getChipColor(task.priority),
+                        labelColor = Color.Black
+                    )
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(
@@ -145,8 +174,6 @@ fun TaskItem(
                             .align(Alignment.CenterVertically)
                             .padding(end = 16.dp)
                             .fillMaxHeight()
-
-
                     )
                 }
             }
@@ -154,6 +181,60 @@ fun TaskItem(
     }
 
 
+}
+
+@Composable
+fun TabView(tabBarItems: List<TabBarItem>) {
+    var selectedTabIndex by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
+    NavigationBar {
+        // looping over each tab to generate the views and navigation for each item
+        tabBarItems.forEachIndexed { index, tabBarItem ->
+            NavigationBarItem(
+                selected = selectedTabIndex == index,
+                onClick = {
+                    selectedTabIndex = index
+                },
+                icon = {
+                    TabBarIconView(
+                        isSelected = selectedTabIndex == index,
+                        selectedIcon = tabBarItem.selectedIcon,
+                        unselectedIcon = tabBarItem.unselectedIcon,
+                        title = tabBarItem.title,
+                        badgeAmount = tabBarItem.badgeAmount
+                    )
+                },
+                label = {Text(tabBarItem.title)})
+        }
+    }
+}
+
+
+@Composable
+fun TabBarIconView(
+    isSelected: Boolean,
+    selectedIcon: ImageVector,
+    unselectedIcon: ImageVector,
+    title: String,
+    badgeAmount: Int? = null
+) {
+    BadgedBox(badge = { TabBarBadgeView(badgeAmount) }) {
+        Icon(
+            imageVector = if (isSelected) {selectedIcon} else {unselectedIcon},
+            contentDescription = title
+        )
+    }
+}
+
+@Composable
+fun TabBarBadgeView(count: Int? = null) {
+    if (count != null) {
+        Badge {
+            Text(count.toString())
+        }
+    }
 }
 
 private fun getChipColor(priority: Int): Color {
@@ -170,4 +251,26 @@ private fun getChipColor(priority: Int): Color {
 @Composable
 fun Preview() {
 
+}
+
+private fun getTabBarItems(context: Context): List<TabBarItem> {
+    val homeTab = TabBarItem(
+        title = context.resources.getString(com.hicham.core.R.string.bottom_bar_tome),
+        selectedIcon = Icons.Filled.Home, unselectedIcon = Icons.Outlined.Home
+    )
+    val inboxTab = TabBarItem(
+        title = context.resources.getString(com.hicham.core.R.string.bottom_bar_inbox),
+        selectedIcon = Icons.Filled.Email,
+        unselectedIcon = Icons.Outlined.MailOutline,
+        badgeAmount = 7
+    )
+    val favoriteTab = TabBarItem(
+        title = context.resources.getString(com.hicham.core.R.string.bottom_bar_favorite),
+        selectedIcon = Icons.Filled.Favorite, unselectedIcon = Icons.Default.FavoriteBorder
+    )
+    val settingsTab = TabBarItem(
+        title = context.resources.getString(com.hicham.core.R.string.bottom_bar_settings),
+        selectedIcon = Icons.Filled.Settings, unselectedIcon = Icons.Outlined.Settings
+    )
+    return listOf(homeTab, inboxTab, favoriteTab, settingsTab)
 }

@@ -7,4 +7,9 @@
         <item>Priority 3</item>
         <item>Priority 4</item>
     </string-array>
+
+    <string name="bottom_bar_tome">HOME</string>
+    <string name="bottom_bar_favorite">FAVORITE</string>
+    <string name="bottom_bar_inbox">INBOX</string>
+    <string name="bottom_bar_settings">SETTINGS</string>
 </resources>
