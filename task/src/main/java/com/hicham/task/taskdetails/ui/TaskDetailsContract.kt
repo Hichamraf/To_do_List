@@ -7,10 +7,10 @@ import com.hicham.core.model.ViewState
 import com.hicham.data.persistence.model.Task
 
 
-data class TaskDetailsUiState(val task: Task? = null, val nameError: Boolean = false, val date: String? = null) : ViewState
+data class TaskDetailsUiState(val task: Task? = null, val sendButtonEnabled: Boolean = false, val date: String? = null) : ViewState
 
 sealed interface TaskDetailAction : ViewAction {
-    data object OnNameTextChanged : TaskDetailAction
+    data class OnNameTextChanged(val newText: String) : TaskDetailAction
 
     data class UpdateTask(
         val name: String, val descriptor: String, val isDone: Boolean,

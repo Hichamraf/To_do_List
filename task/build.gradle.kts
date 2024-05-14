@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt)
+    testImplementation(project(":core"))
+    testImplementation(project(":core"))
     kapt(libs.hilt.compiler)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -67,6 +69,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

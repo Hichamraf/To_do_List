@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -46,6 +45,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hicham.task.R
+import com.hicham.task.taskdetails.ui.DetailEvent.GoBack
 import com.hicham.task.taskdetails.ui.TaskDetailAction.OnDateChanged
 import com.hicham.task.taskdetails.ui.TaskDetailAction.OnNameTextChanged
 import com.hicham.task.taskdetails.ui.TaskDetailAction.OnTaskCheckBoxChanged
@@ -66,7 +66,9 @@ fun TaskDetailsScreen(
 
     LaunchedEffect(key1 = viewModel.viewState) {
         viewModel.coordinatorEvent.collect {
-            goBack.invoke()
+            when(it){
+                GoBack ->goBack.invoke()
+            }
         }
     }
     ModalBottomSheet(onDismissRequest = { goBack.invoke() }) {
@@ -152,7 +154,7 @@ private fun TaskInfos(viewModel: TaskDetailsViewModel) {
                 value = name,
                 onValueChange = {
                     name = it
-                    viewModel.processViewActions(OnNameTextChanged)
+                    viewModel.processViewActions(OnNameTextChanged(it.text))
                 },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
@@ -163,15 +165,7 @@ private fun TaskInfos(viewModel: TaskDetailsViewModel) {
                 label = {
                     Text(text = stringResource(R.string.add_task_name_ph))
                 },
-                supportingText = {
-                    if (state.nameError) {
-                        Text(
-                            text = "Please enter a task name", color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                },
                 shape = RoundedCornerShape(8.dp),
-                isError = state.nameError,
             )
 
         }
@@ -235,6 +229,7 @@ private fun TaskInfos(viewModel: TaskDetailsViewModel) {
 
             OutlinedButton(
                 shape = RoundedCornerShape(8.dp),
+                enabled = state.sendButtonEnabled,
                 modifier = Modifier
                     .padding(all = 4.dp), onClick = {
                     viewModel.processViewActions(

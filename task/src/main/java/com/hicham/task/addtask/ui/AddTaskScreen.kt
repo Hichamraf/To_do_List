@@ -13,25 +13,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -44,18 +36,15 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hicham.task.R
 import com.hicham.task.addtask.ui.AddTaskAction.OnAddTask
 import com.hicham.task.addtask.ui.AddTaskAction.OnNameTextChanged
 import com.hicham.core.utils.getTodayStartOfDayMillis
-import com.hicham.core.utils.millisToDate
 import com.hicham.task.addtask.ui.AddTaskAction.OnDateChanged
 import com.hicham.task.uicomponents.CalenderPicker
 import com.hicham.task.uicomponents.PriorityMenu
@@ -141,7 +130,7 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
                 .padding(start = 2.dp, end = 2.dp, top = 0.dp, bottom = 0.dp),
             value = name, onValueChange = {
                 name = it
-                viewModel.processViewActions(OnNameTextChanged)
+                viewModel.processViewActions(OnNameTextChanged(it))
             },
             placeholder = {
                 Text(text = stringResource(R.string.add_task_name_ph))
@@ -152,7 +141,6 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            isError = state.nameError,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
@@ -209,17 +197,20 @@ private fun TaskInfos(viewModel: AddTaskViewModel, onBottomSheetDismissed: () ->
                 Text(text = priorities[selectedIndex])
             }
             Spacer(modifier = Modifier.weight(1f))
-            OutlinedButton(onClick = {
-                onBottomSheetDismissed.invoke()
-                viewModel.processViewActions(
-                    OnAddTask(
-                        name, description,
-                        getSelectedTime(dateState),
-                        selectedIndex,
+            OutlinedButton(
+                onClick = {
+                    onBottomSheetDismissed.invoke()
+                    viewModel.processViewActions(
+                        OnAddTask(
+                            name, description,
+                            getSelectedTime(dateState),
+                            selectedIndex,
 
-                        )
-                )
-            }) {
+                            )
+                    )
+                },
+                enabled = state.sendButtonEnabled
+            ) {
                 Icon(Icons.AutoMirrored.Outlined.Send, contentDescription = "Send")
             }
         }

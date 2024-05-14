@@ -16,7 +16,8 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTaskUseCase) : BaseViewModel<AddTaskState, AddTaskAction, AddTaskEvent>() {
+class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTaskUseCase) :
+    BaseViewModel<AddTaskState, AddTaskAction, AddTaskEvent>() {
     override fun createInitialState(): AddTaskState {
         return AddTaskState()
     }
@@ -24,7 +25,7 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
     override fun processViewActions(viewAction: AddTaskAction) {
         when (viewAction) {
             is OnAddTask -> processAddTask(viewAction)
-            OnNameTextChanged -> checkNameError()
+            is OnNameTextChanged -> checkSendButtonStatus(viewAction.newText)
             is OnDateChanged -> updateDateButtonName(viewAction.newDate)
         }
     }
@@ -35,10 +36,9 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
         }
     }
 
-    private fun checkNameError() {
+    private fun checkSendButtonStatus(newText: String) {
         currentViewState().apply {
-            if (nameError)
-                updateViewState { this.copy(nameError = false) }
+                updateViewState { this.copy(sendButtonEnabled = newText.isNotEmpty()) }
         }
     }
 
@@ -49,14 +49,14 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
             saveTask(task)
         } else {
             updateViewState {
-                currentViewState().copy(nameError = true)
+                currentViewState().copy(sendButtonEnabled = true)
             }
         }
     }
 
     private fun saveTask(task: Task) {
         viewModelScope.launch {
-            saveTaskUseCase(task)
+            saveTaskUseCase.invoke(task)
             sendCoordinatorEvent(OnTaskSaved)
         }
     }

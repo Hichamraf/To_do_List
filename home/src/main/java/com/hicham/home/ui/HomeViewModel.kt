@@ -8,6 +8,9 @@ import com.hicham.home.domain.usecase.GetTaskByDateUseCase
 import com.hicham.home.domain.usecase.GetTasksUseCase
 import com.hicham.home.domain.usecase.SetSelectedTaskUseCase
 import com.hicham.home.domain.usecase.UpdateTaskUseCase
+import com.hicham.home.ui.HomeAction.OnTaskCheckChanged
+import com.hicham.home.ui.HomeAction.OnTaskFavoriteClicked
+import com.hicham.home.ui.HomeAction.OnTaskSelected
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,9 +46,9 @@ class HomeViewModel @Inject constructor(
 
     override fun processViewActions(viewAction: HomeAction) {
         when (viewAction) {
-            is HomeAction.OnTaskCheckChanged -> processTaskCheckChange(viewAction.isChecked, viewAction.task)
-            is HomeAction.OnTaskSelected -> viewModelScope.launch { setSelectedTaskUseCase(viewAction.task) }
-            is HomeAction.OnTaskFavoriteClicked -> viewModelScope.launch { updateTaskUseCase(viewAction.task.copy(isFavorite = viewAction.isFavourite)) }
+            is OnTaskCheckChanged -> processTaskCheckChange(viewAction.isChecked, viewAction.task)
+            is OnTaskSelected -> viewModelScope.launch { setSelectedTaskUseCase(viewAction.task) }
+            is OnTaskFavoriteClicked -> viewModelScope.launch { updateTaskUseCase(viewAction.task.copy(isFavorite = viewAction.isFavourite)) }
         }
     }
 
