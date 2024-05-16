@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.hicham.home.ui.HomeScreen
+import com.hicham.inbox.ui.InboxScreen
 import com.hicham.task.addtask.ui.AddTaskScreen
 import com.hicham.task.taskdetails.ui.TaskDetailsScreen
 import com.hicham.todolist.model.NavigationItem
@@ -17,9 +18,7 @@ fun AppNavHost(navController: NavHostController, startDestination: String = Navi
     androidx.navigation.compose.NavHost(navController = navController, startDestination = startDestination) {
 
         composable(NavigationItem.Home.route) {
-            HomeScreen(onAddClicked = {
-                navController.navigate(NavigationItem.AddTask.route)
-            },
+            HomeScreen(
                 onItemClicked = {
                     navController.navigate(
                         NavigationItem.UpdateTask.route
@@ -38,6 +37,10 @@ fun AppNavHost(navController: NavHostController, startDestination: String = Navi
             TaskDetailsScreen {
                 navController.popBackStack()
             }
+        }
+
+        composable(NavigationItem.Inbox.route) {
+            InboxScreen()
         }
 
     }

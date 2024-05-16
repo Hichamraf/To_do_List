@@ -72,6 +72,7 @@ dependencies {
     implementation(project(":home"))
     implementation(project(":task"))
     implementation(project(":core"))
+    implementation(project(":inbox"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

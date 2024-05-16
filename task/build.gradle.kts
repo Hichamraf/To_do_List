@@ -55,8 +55,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt)
-    testImplementation(project(":core"))
-    testImplementation(project(":core"))
     kapt(libs.hilt.compiler)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

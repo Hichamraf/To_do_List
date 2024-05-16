@@ -15,7 +15,7 @@ import org.junit.Test
 class GetTaskByDateUseCaseTest {
 
     private val taskRepository: TaskRepository = mockk()
-    private val useCase = GetTaskByDateUseCase(taskRepository)
+    private val useCase = com.hicham.shared.domain.usecase.GetTaskByDateUseCase(taskRepository)
 
     @Test
     fun `test useCase returns tasks by date from repository when invoked`() = runTest {

@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TaskDao {
 
-    @Query("Select * FROM task ORDER by priority DESC")
-    fun getAll(): Flow<List<Task>>
+    @Query("Select * FROM task WHERE isDone=:isDone ORDER by priority DESC")
+    fun getAll(isDone: Boolean = false): Flow<List<Task>>
 
     @Query("Select * FROM task WHERE date = :date ORDER by priority DESC")
     fun getTaskByDate(date: Long): Flow<List<Task>>

@@ -65,7 +65,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(project(":core"))
     implementation(project((":data")))
-
+    implementation(project(":components"))
+    implementation(project(":shared"))
 
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)

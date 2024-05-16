@@ -14,7 +14,7 @@ import org.junit.Test
 
 class GetTasksUseCaseTest {
     private val taskRepository: TaskRepository = mockk()
-    private val useCase = GetTasksUseCase(taskRepository)
+    private val useCase = com.hicham.shared.domain.usecase.GetTasksUseCase(taskRepository)
 
     @Test
     fun `test useCase returns all task returned by task repository when invoked`() = runTest {

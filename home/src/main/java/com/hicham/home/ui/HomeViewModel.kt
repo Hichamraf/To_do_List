@@ -4,16 +4,13 @@ import androidx.lifecycle.viewModelScope
 import com.hicham.core.ui.BaseViewModel
 import com.hicham.core.utils.getTodayStartOfDayMillis
 import com.hicham.data.persistence.model.Task
-import com.hicham.home.domain.usecase.GetTaskByDateUseCase
-import com.hicham.home.domain.usecase.GetTasksUseCase
-import com.hicham.home.domain.usecase.SetSelectedTaskUseCase
-import com.hicham.home.domain.usecase.UpdateTaskUseCase
 import com.hicham.home.ui.HomeAction.OnTaskCheckChanged
 import com.hicham.home.ui.HomeAction.OnTaskFavoriteClicked
 import com.hicham.home.ui.HomeAction.OnTaskSelected
+import com.hicham.shared.domain.usecase.GetTaskByDateUseCase
+import com.hicham.shared.domain.usecase.SetSelectedTaskUseCase
+import com.hicham.shared.domain.usecase.UpdateTaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 

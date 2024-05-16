@@ -13,7 +13,7 @@ import org.junit.Test
 class SetSelectedTaskUseCaseTest {
 
     private val taskRepository: TaskModRepo = mockk(relaxUnitFun = true)
-    private val useCase = SetSelectedTaskUseCase(taskRepository)
+    private val useCase = com.hicham.shared.domain.usecase.SetSelectedTaskUseCase(taskRepository)
 
     @Test
     fun `test useCase sets selected task to task repository when invoked`()= runTest {

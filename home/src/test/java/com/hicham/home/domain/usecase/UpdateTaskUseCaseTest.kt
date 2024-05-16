@@ -10,7 +10,7 @@ import org.junit.Test
 
 class UpdateTaskUseCaseTest{
     private val taskRepository: TaskRepository = mockk(relaxUnitFun = true)
-    private val useCase = UpdateTaskUseCase(taskRepository)
+    private val useCase = com.hicham.shared.domain.usecase.UpdateTaskUseCase(taskRepository)
 
     @Test
     fun `test useCase update task in taskRepo when invoked`() = runTest{
