@@ -66,13 +66,14 @@ dependencies {
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    // Testing Navigation
     androidTestImplementation(libs.androidx.navigation.testing)
 
     implementation(project(":home"))
     implementation(project(":task"))
     implementation(project(":core"))
     implementation(project(":inbox"))
+    implementation(project(":favorite"))
+    implementation(project((":settings")))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

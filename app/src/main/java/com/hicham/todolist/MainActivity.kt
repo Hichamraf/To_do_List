@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     bottomBar = {
-                        TabView(tabBarItems = getTabBarItems(LocalContext.current),navController)
+                        TabView(tabBarItems = getTabBarItems(LocalContext.current), navController)
                     },
                     floatingActionButton = {
                         FloatingActionButton(
@@ -88,7 +88,6 @@ private fun getTabBarItems(context: Context): List<TabBarItem> {
         title = context.resources.getString(R.string.bottom_bar_inbox),
         selectedIcon = Icons.Filled.Email,
         unselectedIcon = Icons.Outlined.MailOutline,
-        badgeAmount = 7
     )
     val favoriteTab = TabBarItem(
         title = context.resources.getString(R.string.bottom_bar_favorite),
@@ -109,17 +108,27 @@ fun TabView(tabBarItems: List<TabBarItem>, navController: NavController) {
     }
 
     NavigationBar {
-        // looping over each tab to generate the views and navigation for each item
         tabBarItems.forEachIndexed { index, tabBarItem ->
             NavigationBarItem(
                 selected = selectedTabIndex == index,
                 onClick = {
                     selectedTabIndex = index
                     when (selectedTabIndex) {
-                        0 -> {navController.navigate(Screen.HOME.name)}
-                        1 -> {navController.navigate(Screen.INBOX.name)}
-                        2 -> {}
-                        3 -> {}
+                        0 -> {
+                            navController.navigate(Screen.HOME.name)
+                        }
+
+                        1 -> {
+                            navController.navigate(Screen.INBOX.name)
+                        }
+
+                        2 -> {
+                            navController.navigate(Screen.FAVORITE.name)
+                        }
+
+                        3 -> {
+                            navController.navigate(Screen.SETTINGS.name)
+                        }
                     }
                 },
                 icon = {

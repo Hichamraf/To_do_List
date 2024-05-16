@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TaskDao {
 
-    @Query("Select * FROM task WHERE isDone=:isDone ORDER by priority DESC")
+    @Query("SELECT * FROM task WHERE isDone=:isDone ORDER by priority DESC")
     fun getAll(isDone: Boolean = false): Flow<List<Task>>
 
-    @Query("Select * FROM task WHERE date = :date ORDER by priority DESC")
+    @Query("SELECT * FROM task WHERE date = :date ORDER by priority DESC")
     fun getTaskByDate(date: Long): Flow<List<Task>>
 
-    @Query("Select * FROM task where name LIKE :query OR description LIKE :query")
+    @Query("SELECT * FROM task where name LIKE :query OR description LIKE :query")
     suspend fun searchTask(query: String): List<Task>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -30,6 +30,9 @@ interface TaskDao {
     @Update
     suspend fun update(task: Task)
 
-    @Query("Select * FROM task WHERE id = :taskId")
+    @Query("SELECT * FROM task WHERE id = :taskId")
     suspend fun findTaskById(taskId: Int): Task
+
+    @Query("SELECT * FROM task WHERE isFavorite = :isFavorite AND isDone=:isDone")
+    fun getFavoriteTasks(isFavorite: Boolean = true, isDone: Boolean = false): Flow<List<Task>>
 }

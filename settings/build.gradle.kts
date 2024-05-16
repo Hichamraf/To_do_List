@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.hicham.core"
+    namespace = "com.hicham.settings"
     compileSdk = 34
 
     defaultConfig {
@@ -41,15 +41,18 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(platform(libs.androidx.compose.bom))
-
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.material3)
+    implementation(project(":core"))
+    implementation(project(":shared"))
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
 
-    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

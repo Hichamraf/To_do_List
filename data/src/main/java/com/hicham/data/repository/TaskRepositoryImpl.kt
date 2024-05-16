@@ -16,4 +16,5 @@ class TaskRepositoryImpl @Inject constructor(private val taskDao: TaskDao) : Tas
     override suspend fun removeTask(task: Task) = taskDao.delete(task)
     override suspend fun updateTask(task: Task) = taskDao.update(task)
     override suspend fun getTaskById(taskId: Int): Task = taskDao.findTaskById(taskId)
+    override suspend fun getFavoriteTasks(): Flow<List<Task>> = taskDao.getFavoriteTasks()
 }

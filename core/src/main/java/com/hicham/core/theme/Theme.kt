@@ -2,6 +2,7 @@ package com.hicham.core.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -39,7 +40,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun ToDoListTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = isNightMode(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -67,4 +68,11 @@ fun ToDoListTheme(
         typography = Typography,
         content = content
     )
+}
+
+@Composable
+private fun isNightMode() = when (AppCompatDelegate.getDefaultNightMode()) {
+    AppCompatDelegate.MODE_NIGHT_NO -> false
+    AppCompatDelegate.MODE_NIGHT_YES -> true
+    else -> isSystemInDarkTheme()
 }

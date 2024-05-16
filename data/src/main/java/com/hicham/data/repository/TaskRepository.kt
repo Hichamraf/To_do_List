@@ -12,4 +12,5 @@ interface TaskRepository {
     suspend fun removeTask(task: Task)
     suspend fun updateTask(task: Task)
     suspend fun getTaskById(taskId: Int): Task
+    suspend fun getFavoriteTasks(): Flow<List<Task>>
 }
