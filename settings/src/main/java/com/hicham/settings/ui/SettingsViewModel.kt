@@ -1,6 +1,5 @@
 package com.hicham.settings.ui
 
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.viewModelScope
 import com.hicham.core.ui.BaseViewModel
 import com.hicham.shared.domain.usecase.GetDarKModeUseCase

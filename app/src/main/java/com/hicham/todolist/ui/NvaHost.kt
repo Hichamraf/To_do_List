@@ -10,6 +10,7 @@ import com.hicham.settings.ui.SettingsScreen
 import com.hicham.task.addtask.ui.AddTaskScreen
 import com.hicham.task.taskdetails.ui.TaskDetailsScreen
 import com.hicham.todolist.model.NavigationItem
+import com.hicham.todolist.model.Screen
 
 
 @Composable
@@ -40,11 +41,15 @@ fun AppNavHost(navController: NavHostController, startDestination: String = Navi
         }
 
         composable(NavigationItem.Inbox.route) {
-            InboxScreen()
+            InboxScreen{
+                navController.navigate(Screen.UPDATE_TASK.name)
+            }
         }
 
         composable(NavigationItem.Favorite.route) {
-            FavoriteScreen()
+            FavoriteScreen{
+                navController.navigate(Screen.UPDATE_TASK.name)
+            }
         }
 
         composable(NavigationItem.Settings.route) {

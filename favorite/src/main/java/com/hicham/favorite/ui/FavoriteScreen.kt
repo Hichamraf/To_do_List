@@ -6,22 +6,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hicham.components.TaskItem
+import com.hicham.favorite.ui.FavoriteAction.OnTaskCheckChanged
 import com.hicham.favorite.ui.FavoriteAction.OnTaskFavoriteClicked
 import com.hicham.favorite.ui.FavoriteAction.OnTaskSelected
 
 @Composable
-fun FavoriteScreen(viewModel: FavoriteViewModel = hiltViewModel()) {
+fun FavoriteScreen(viewModel: FavoriteViewModel = hiltViewModel(), onItemClicked: () -> Unit) {
 
     val state = viewModel.viewState.collectAsState()
 
     LazyColumn {
         items(state.value.tasks, key = { it.id!! }) {
             TaskItem(task = it, onItemClicked = {
+                onItemClicked.invoke()
                 viewModel.processViewActions(OnTaskSelected(it))
             }, onChecked = { isFavorite ->
                 viewModel.processViewActions(OnTaskFavoriteClicked(isFavorite, it))
             }) { isDone ->
-                viewModel.processViewActions(FavoriteAction.OnTaskCheckChanged(isDone, it))
+                viewModel.processViewActions(OnTaskCheckChanged(isDone, it))
             }
         }
     }
