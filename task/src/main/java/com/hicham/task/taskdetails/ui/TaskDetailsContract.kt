@@ -20,6 +20,8 @@ sealed interface TaskDetailAction : ViewAction {
     data class OnTaskCheckBoxChanged(val isDone: Boolean) : TaskDetailAction
 
     data class OnDateChanged(val newDate: Long) : TaskDetailAction
+
+    data object OnGoBack : TaskDetailAction
 }
 
 sealed interface TaskDetailsEvent : ViewEvent

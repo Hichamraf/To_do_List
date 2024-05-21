@@ -61,6 +61,7 @@ dependencies {
 
     implementation(project(":core"))
     implementation(project(":data"))
+    implementation(project(":navigation"))
 
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

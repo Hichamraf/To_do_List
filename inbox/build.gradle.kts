@@ -54,7 +54,10 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":components"))
     implementation(project(":shared"))
+    implementation(project(":navigation"))
 
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

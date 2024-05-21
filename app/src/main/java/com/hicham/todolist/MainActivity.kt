@@ -39,12 +39,17 @@ import com.hicham.core.R
 import com.hicham.core.theme.ToDoListTheme
 import com.hicham.home.ui.TabBarIconView
 import com.hicham.home.ui.TabBarItem
-import com.hicham.todolist.model.Screen
-import com.hicham.todolist.ui.AppNavHost
+import com.hicham.navigation.Navigator
+import com.hicham.navigation.Screen
+import com.hicham.todolist.navigation.NavigationComponent
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var navigator: Navigator
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -65,7 +70,7 @@ class MainActivity : ComponentActivity() {
                 ) { _ ->
 
                     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                        AppNavHost(navController = navController)
+                        NavigationComponent(navController, navigator)
                     }
                 }
 

@@ -27,9 +27,9 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
 
-    private val getTaskByDateUseCase: com.hicham.shared.domain.usecase.GetTaskByDateUseCase = mockk()
-    private val updateTaskUseCase: com.hicham.shared.domain.usecase.UpdateTaskUseCase = mockk(relaxUnitFun = true)
-    private val setSelectedTaskUseCase: com.hicham.shared.domain.usecase.SetSelectedTaskUseCase = mockk(relaxUnitFun = true)
+    private val getTaskByDateUseCase: GetTaskByDateUseCase = mockk()
+    private val updateTaskUseCase: UpdateTaskUseCase = mockk(relaxUnitFun = true)
+    private val setSelectedTaskUseCase: SetSelectedTaskUseCase = mockk(relaxUnitFun = true)
     private val task = Task(id = 1, "name", "desc", isDone = false, false, null, 3)
     private lateinit var viewModel: HomeViewModel
 

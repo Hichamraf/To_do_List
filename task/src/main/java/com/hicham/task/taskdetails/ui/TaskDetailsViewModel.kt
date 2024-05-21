@@ -7,6 +7,9 @@ import com.hicham.core.utils.createDateFromMillis
 import com.hicham.core.utils.getTodayStartOfDayMillis
 import com.hicham.core.utils.millisToDate
 import com.hicham.data.persistence.model.Task
+import com.hicham.navigation.NavigationItem
+import com.hicham.navigation.NavigationItem.GoBack
+import com.hicham.navigation.Navigator
 import com.hicham.task.taskdetails.domain.usecase.GetSelectedTaskUseCase
 import com.hicham.task.taskdetails.domain.usecase.UpdateTaskUseCase
 import com.hicham.task.taskdetails.ui.TaskDetailAction.OnDateChanged
@@ -23,6 +26,7 @@ import kotlinx.coroutines.launch
 class TaskDetailsViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val getSelectedTaskUseCase: GetSelectedTaskUseCase,
+    private val navigator: Navigator
 ) : BaseViewModel<TaskDetailsUiState, TaskDetailAction, TaskDetailsEvent>() {
 
     @VisibleForTesting
@@ -54,6 +58,7 @@ class TaskDetailsViewModel @Inject constructor(
             is OnNameTextChanged -> checkSendButtonStatus(viewAction.newText)
             is OnTaskCheckBoxChanged -> updateTaskState(viewAction.isDone)
             is OnDateChanged -> updateDate(viewAction.newDate)
+            TaskDetailAction.OnGoBack -> navigator.navigateTo(GoBack)
         }
     }
 
@@ -77,6 +82,7 @@ class TaskDetailsViewModel @Inject constructor(
         )
         if (task.isTaskValid()) {
             updateTask(task)
+            navigator.navigateTo(NavigationItem.Home)
         } else {
             updateViewState {
                 currentViewState().copy(sendButtonEnabled = true)

@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.material)
     implementation(project(":core"))
     implementation(project(":shared"))
+    implementation(project(":navigation"))
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -53,6 +54,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
 
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

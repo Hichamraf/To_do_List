@@ -54,19 +54,11 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTaskScreen(viewModel: AddTaskViewModel = hiltViewModel(), onGoBack: () -> Unit) {
-
-    LaunchedEffect(key1 = viewModel.viewState) {
-        viewModel.coordinatorEvent.collect {
-            onGoBack.invoke()
-        }
-
-    }
+fun AddTaskScreen(viewModel: AddTaskViewModel = hiltViewModel()) {
     var showBottomSheet by remember { mutableStateOf(false) }
     ModalBottomSheet(
         onDismissRequest = {
             showBottomSheet = false
-            onGoBack.invoke()
         }
     ) {
         Column {

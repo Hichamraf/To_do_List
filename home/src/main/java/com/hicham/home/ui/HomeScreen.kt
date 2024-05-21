@@ -29,8 +29,7 @@ import com.hicham.home.ui.HomeAction.OnTaskCheckChanged
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
-    onItemClicked: () -> Unit
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
 
     val state by viewModel.viewState.collectAsState()
@@ -45,7 +44,7 @@ fun HomeScreen(
             items(state.taskList, key = { it.id!! }) {
                 TaskItem(it, onItemClicked = {
                     viewModel.processViewActions(HomeAction.OnTaskSelected(it))
-                    onItemClicked.invoke()
+               //     onItemClicked.invoke()
                 },
                     onFavoriteClicked = { isFav ->
                         viewModel.processViewActions(HomeAction.OnTaskFavoriteClicked(isFav, it))

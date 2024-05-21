@@ -5,6 +5,9 @@ import com.hicham.core.ui.BaseViewModel
 import com.hicham.core.utils.createDateFromMillis
 import com.hicham.core.utils.millisToDate
 import com.hicham.data.persistence.model.Task
+import com.hicham.navigation.NavigationItem
+import com.hicham.navigation.NavigationItem.GoBack
+import com.hicham.navigation.Navigator
 import com.hicham.task.addtask.domain.usecase.SaveTaskUseCase
 import com.hicham.task.addtask.ui.AddTaskAction.OnAddTask
 import com.hicham.task.addtask.ui.AddTaskAction.OnDateChanged
@@ -16,7 +19,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTaskUseCase) :
+class AddTaskViewModel @Inject constructor(
+    private val saveTaskUseCase: SaveTaskUseCase,
+    private val navigator: Navigator
+) :
     BaseViewModel<AddTaskState, AddTaskAction, AddTaskEvent>() {
     override fun createInitialState(): AddTaskState {
         return AddTaskState()
@@ -38,7 +44,7 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
 
     private fun checkSendButtonStatus(newText: String) {
         currentViewState().apply {
-                updateViewState { this.copy(sendButtonEnabled = newText.isNotEmpty()) }
+            updateViewState { this.copy(sendButtonEnabled = newText.isNotEmpty()) }
         }
     }
 
@@ -47,6 +53,7 @@ class AddTaskViewModel @Inject constructor(private val saveTaskUseCase: SaveTask
         val task = Task(name = viewAction.name, description = viewAction.description, date = date, priority = viewAction.priority)
         if (task.isTaskValid()) {
             saveTask(task)
+            navigator.navigateTo(GoBack)
         } else {
             updateViewState {
                 currentViewState().copy(sendButtonEnabled = true)

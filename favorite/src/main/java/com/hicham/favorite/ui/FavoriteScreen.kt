@@ -11,14 +11,13 @@ import com.hicham.favorite.ui.FavoriteAction.OnTaskFavoriteClicked
 import com.hicham.favorite.ui.FavoriteAction.OnTaskSelected
 
 @Composable
-fun FavoriteScreen(viewModel: FavoriteViewModel = hiltViewModel(), onItemClicked: () -> Unit) {
+fun FavoriteScreen(viewModel: FavoriteViewModel = hiltViewModel()) {
 
     val state = viewModel.viewState.collectAsState()
 
     LazyColumn {
         items(state.value.tasks, key = { it.id!! }) {
             TaskItem(task = it, onItemClicked = {
-                onItemClicked.invoke()
                 viewModel.processViewActions(OnTaskSelected(it))
             }, onChecked = { isFavorite ->
                 viewModel.processViewActions(OnTaskFavoriteClicked(isFavorite, it))

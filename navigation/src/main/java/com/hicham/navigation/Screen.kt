@@ -1,4 +1,4 @@
-package com.hicham.todolist.model
+package com.hicham.navigation
 
 enum class Screen {
     HOME,
@@ -6,14 +6,15 @@ enum class Screen {
     UPDATE_TASK,
     INBOX,
     FAVORITE,
-    SETTINGS
+    SETTINGS,
 }
 
-sealed class NavigationItem(val route: String) {
+sealed class NavigationItem(val route: String = "") {
     data object AddTask : NavigationItem(Screen.ADD_TASK.name)
     data object Home : NavigationItem(Screen.HOME.name)
     data object Inbox : NavigationItem(Screen.INBOX.name)
     data object Favorite : NavigationItem(Screen.FAVORITE.name)
     data object Settings : NavigationItem(Screen.SETTINGS.name)
     data object UpdateTask : NavigationItem(Screen.UPDATE_TASK.name)
+    data object GoBack : NavigationItem()
 }

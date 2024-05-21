@@ -74,6 +74,7 @@ dependencies {
     implementation(project(":inbox"))
     implementation(project(":favorite"))
     implementation(project((":settings")))
+    implementation(project(":navigation"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

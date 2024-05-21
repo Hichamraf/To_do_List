@@ -2,6 +2,7 @@ package com.hicham.settings.ui
 
 import androidx.lifecycle.viewModelScope
 import com.hicham.core.ui.BaseViewModel
+import com.hicham.settings.ui.SettingsAction.OnDarkModeCheckChange
 import com.hicham.shared.domain.usecase.GetDarKModeUseCase
 import com.hicham.shared.domain.usecase.SaveDarkModeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +33,7 @@ class SettingsViewModel @Inject constructor(
 
     override fun processViewActions(viewAction: SettingsAction) {
         when (viewAction) {
-            is SettingsAction.OnDarkModeCheckChange -> processDarkModeChange(viewAction.isChecked)
+            is OnDarkModeCheckChange -> processDarkModeChange(viewAction.isChecked)
         }
     }
 

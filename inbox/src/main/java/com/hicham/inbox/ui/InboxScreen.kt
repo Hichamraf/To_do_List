@@ -11,13 +11,12 @@ import com.hicham.inbox.ui.InBoxAction.OnTaskFavoriteClicked
 import com.hicham.inbox.ui.InBoxAction.OnTaskSelected
 
 @Composable
-fun InboxScreen(viewModel: InboxViewModel = hiltViewModel(), onItemClicked: () -> Unit) {
+fun InboxScreen(viewModel: InboxViewModel = hiltViewModel()) {
 
     val state = viewModel.viewState.collectAsState()
     LazyColumn {
         items(state.value.tasks, key = { it.id!! }) {
             TaskItem(it, onItemClicked = {
-                onItemClicked.invoke()
                 viewModel.processViewActions(OnTaskSelected(it))
             }, onChecked = { isDone ->
                 viewModel.processViewActions(OnTaskCheckChanged(isDone, it))

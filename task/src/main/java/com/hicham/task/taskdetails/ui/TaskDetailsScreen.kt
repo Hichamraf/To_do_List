@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hicham.task.R
 import com.hicham.task.taskdetails.ui.DetailEvent.GoBack
 import com.hicham.task.taskdetails.ui.TaskDetailAction.OnDateChanged
+import com.hicham.task.taskdetails.ui.TaskDetailAction.OnGoBack
 import com.hicham.task.taskdetails.ui.TaskDetailAction.OnNameTextChanged
 import com.hicham.task.taskdetails.ui.TaskDetailAction.OnTaskCheckBoxChanged
 import com.hicham.task.taskdetails.ui.TaskDetailAction.UpdateTask
@@ -60,18 +61,10 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailsScreen(
-    viewModel: TaskDetailsViewModel = hiltViewModel(),
-    goBack: () -> Unit
+    viewModel: TaskDetailsViewModel = hiltViewModel()
 ) {
 
-    LaunchedEffect(key1 = viewModel.viewState) {
-        viewModel.coordinatorEvent.collect {
-            when(it){
-                GoBack ->goBack.invoke()
-            }
-        }
-    }
-    ModalBottomSheet(onDismissRequest = { goBack.invoke() }) {
+    ModalBottomSheet(onDismissRequest = { viewModel.processViewActions(OnGoBack) }) {
         Column {
             TaskInfos(viewModel)
         }
