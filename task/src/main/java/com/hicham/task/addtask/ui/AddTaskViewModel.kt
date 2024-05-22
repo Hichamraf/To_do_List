@@ -23,7 +23,7 @@ class AddTaskViewModel @Inject constructor(
     private val saveTaskUseCase: SaveTaskUseCase,
     private val navigator: Navigator
 ) :
-    BaseViewModel<AddTaskState, AddTaskAction, AddTaskEvent>() {
+    BaseViewModel<AddTaskState, AddTaskAction>() {
     override fun createInitialState(): AddTaskState {
         return AddTaskState()
     }

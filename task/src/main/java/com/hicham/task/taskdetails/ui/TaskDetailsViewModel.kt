@@ -27,7 +27,7 @@ class TaskDetailsViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val getSelectedTaskUseCase: GetSelectedTaskUseCase,
     private val navigator: Navigator
-) : BaseViewModel<TaskDetailsUiState, TaskDetailAction, TaskDetailsEvent>() {
+) : BaseViewModel<TaskDetailsUiState, TaskDetailAction>() {
 
     @VisibleForTesting
     lateinit var selectedTask: Task

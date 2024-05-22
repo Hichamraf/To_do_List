@@ -23,7 +23,7 @@ class FavoriteViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val setSelectedTaskUseCase: SetSelectedTaskUseCase,
     private val navigator: Navigator
-) : BaseViewModel<FavoriteUiState, FavoriteAction, FavoriteEvent>() {
+) : BaseViewModel<FavoriteUiState, FavoriteAction>() {
     private val job = SupervisorJob()
 
     init {

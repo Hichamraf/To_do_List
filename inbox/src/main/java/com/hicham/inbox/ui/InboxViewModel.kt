@@ -22,7 +22,7 @@ class InboxViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val setSelectedTaskUseCase: SetSelectedTaskUseCase,
     private val navigator: Navigator
-) : BaseViewModel<InBoxUiState, InBoxAction, InboxEvent>() {
+) : BaseViewModel<InBoxUiState, InBoxAction>() {
 
     init {
         viewModelScope.launch {

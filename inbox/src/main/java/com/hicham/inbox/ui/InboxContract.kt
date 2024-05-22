@@ -13,5 +13,3 @@ sealed interface InBoxAction : ViewAction{
     data class OnTaskFavoriteClicked(val isFavourite : Boolean, val task: Task) : InBoxAction
     class OnTaskSelected(val task: Task) : InBoxAction
 }
-
-sealed interface InboxEvent : ViewEvent

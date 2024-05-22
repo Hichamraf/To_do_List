@@ -23,7 +23,7 @@ class HomeViewModel @Inject constructor(
     private val updateTaskUseCase: UpdateTaskUseCase,
     private val setSelectedTaskUseCase: SetSelectedTaskUseCase,
     private val navigator: Navigator
-) : BaseViewModel<HomeScreenState, HomeAction, HomeEvent>() {
+) : BaseViewModel<HomeScreenState, HomeAction>() {
 
 
 

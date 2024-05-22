@@ -24,7 +24,6 @@ sealed interface TaskDetailAction : ViewAction {
     data object OnGoBack : TaskDetailAction
 }
 
-sealed interface TaskDetailsEvent : ViewEvent
 
 sealed interface DetailEvent : Event {
     data object GoBack : DetailEvent

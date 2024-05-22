@@ -18,7 +18,6 @@ sealed interface AddTaskAction : ViewAction {
     data class OnNameTextChanged(val newText: String) : AddTaskAction
 }
 
-sealed interface AddTaskEvent : ViewEvent
 
 sealed interface NavigationEvent : Event {
     data object OnTaskSaved : NavigationEvent

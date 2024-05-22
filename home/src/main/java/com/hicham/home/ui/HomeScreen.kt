@@ -44,7 +44,6 @@ fun HomeScreen(
             items(state.taskList, key = { it.id!! }) {
                 TaskItem(it, onItemClicked = {
                     viewModel.processViewActions(HomeAction.OnTaskSelected(it))
-               //     onItemClicked.invoke()
                 },
                     onFavoriteClicked = { isFav ->
                         viewModel.processViewActions(HomeAction.OnTaskFavoriteClicked(isFav, it))

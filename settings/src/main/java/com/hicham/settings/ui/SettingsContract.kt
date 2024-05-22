@@ -9,5 +9,3 @@ data class SettingsUiState(val isDarkModeEnabled: Boolean = true) : ViewState
 sealed interface SettingsAction : ViewAction {
     data class OnDarkModeCheckChange(val isChecked: Boolean) : SettingsAction
 }
-
-sealed interface SettingsEvent : ViewEvent

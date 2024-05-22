@@ -13,5 +13,3 @@ sealed interface FavoriteAction : ViewAction{
     data class OnTaskFavoriteClicked(val isFavourite : Boolean, val task: Task) : FavoriteAction
     class OnTaskSelected(val task: Task) : FavoriteAction
 }
-
-sealed interface FavoriteEvent : ViewEvent

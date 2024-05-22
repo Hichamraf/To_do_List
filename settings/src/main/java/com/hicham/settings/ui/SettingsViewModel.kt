@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class SettingsViewModel @Inject constructor(
     private val getDarKModeUseCase: GetDarKModeUseCase,
     private val saveDarkModeUseCase: SaveDarkModeUseCase
-) : BaseViewModel<SettingsUiState, SettingsAction, SettingsEvent>() {
+) : BaseViewModel<SettingsUiState, SettingsAction>() {
     private val job = SupervisorJob()
 
     init {
