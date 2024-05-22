@@ -82,7 +82,7 @@ class TaskDetailsViewModel @Inject constructor(
         )
         if (task.isTaskValid()) {
             updateTask(task)
-            navigator.navigateTo(NavigationItem.Home)
+            navigator.navigateTo(GoBack)
         } else {
             updateViewState {
                 currentViewState().copy(sendButtonEnabled = true)
